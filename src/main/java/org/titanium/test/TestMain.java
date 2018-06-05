@@ -10,9 +10,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import org.titanium.modules.LogInToolsQA;
-import org.titanium.modules.LogOutToolsQA;
-import org.titanium.utils.Constants;
 
 import java.net.MalformedURLException;
 
@@ -21,9 +18,7 @@ public class TestMain {
     WebDriverWait wait;
     WebElement lblError;
     String baseUrl = "http://www.store.demoqa.com";
-    String chromePath = System.getProperty("user.dir")+"\\drivers\\chromedriver.exe";
-    LogInToolsQA logInQA;
-    LogOutToolsQA logOutQA;
+    String chromePath = System.getProperty("user.dir")+"/drivers/chromedriver.exe";
 
     @BeforeTest
     public void setUp() throws MalformedURLException {
@@ -32,8 +27,7 @@ public class TestMain {
         wait = new WebDriverWait(driver, 10);
         driver.get(baseUrl);
         driver.manage().window().maximize();
-        logInQA = new LogInToolsQA(driver);
-        logOutQA  = new LogOutToolsQA(driver);
+
     }
 
     @AfterTest
@@ -43,14 +37,10 @@ public class TestMain {
 
     @Test(priority=0, description="Test Case using valid credentials")
     public void validCredentials() throws InterruptedException{
-        Assert.assertTrue(logInQA.LogIn(Constants.VALID_USERNAME, Constants.VALID_PASSWORD));
-        Thread.sleep(3000);
-        Assert.assertTrue(logOutQA.logOutApplication());
     }
 
     @Test(priority=1, description="Test Case using empty password")
     public void emptyPassword() {
-        Assert.assertTrue(logInQA.LogIn(Constants.VALID_USERNAME, Constants.BLANK));
         lblError = driver.findElement(By.xpath("//*[@id=\"ajax_loginform\"]/p[1]"));
         wait.until(ExpectedConditions.visibilityOf(lblError));
         Assert.assertEquals(lblError.getText(), "ERROR: The password field is empty.");
@@ -58,7 +48,6 @@ public class TestMain {
 
     @Test(priority=2, description="Test Case using empty credentials")
     public void emptyCredentials(){
-        Assert.assertTrue(logInQA.LogIn(Constants.BLANK, Constants.BLANK));
         lblError = driver.findElement(By.xpath(".//*[@id='ajax_loginform']/p[1]"));
         wait.until(ExpectedConditions.visibilityOf(lblError));
         Assert.assertEquals(lblError.getText(), "Please enter your username and password.");
@@ -66,7 +55,6 @@ public class TestMain {
 
     @Test(priority=3, description="Test Case using empty user name")
     public void emptyUserName(){
-        Assert.assertTrue(logInQA.LogIn(Constants.BLANK, Constants.VALID_PASSWORD));
         lblError = driver.findElement(By.xpath(".//*[@id='ajax_loginform']/p[1]"));
         wait.until(ExpectedConditions.visibilityOf(lblError));
         Assert.assertEquals(lblError.getText(), "ERROR: The username field is empty.");
@@ -74,7 +62,6 @@ public class TestMain {
 
     @Test(priority=4, description="Test Case using wrong credentials")
     public void invalidCredentials(){
-        Assert.assertTrue(logInQA.LogIn(Constants.INVALID_USERNAME, Constants.INVALID_PASSWORD));
         lblError = driver.findElement(By.xpath(".//*[@id='ajax_loginform']/p[1]"));
         wait.until(ExpectedConditions.visibilityOf(lblError));
         Assert.assertEquals(lblError.getText(), "ERROR: Invalid username. Lost your password?");
